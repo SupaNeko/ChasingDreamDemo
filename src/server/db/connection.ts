@@ -16,3 +16,16 @@ export function createConnection(dbPath?: string): Database.Database {
   db.pragma("journal_mode = WAL");
   return db;
 }
+
+let singletonDb: Database.Database | null = null;
+
+export function getDb(): Database.Database {
+  if (!singletonDb) {
+    singletonDb = createConnection();
+  }
+  return singletonDb;
+}
+
+export function setDb(db: Database.Database | null): void {
+  singletonDb = db;
+}
