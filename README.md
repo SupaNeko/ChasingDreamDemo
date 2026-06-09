@@ -12,7 +12,7 @@
 - [数据与 API Spec](docs/superpowers/specs/2026-06-09-data-api-spec.md)
 - [Agent 契约 Spec](docs/superpowers/specs/2026-06-09-agent-contract-spec.md)
 
-## 目标技术栈
+## 技术栈
 
 - Next.js + React + TypeScript
 - Next.js API Routes / Route Handlers
