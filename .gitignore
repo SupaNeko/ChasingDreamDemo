@@ -1,0 +1,50 @@
+/.opencode
+/.agents
+
+# Build output
+/dist
+/src-tauri/target
+
+# Dependencies
+/node_modules
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Runtime data (database, logs, webview cache) — ignore everything in data except themes
+/data/*
+!/data/themes/
+!/data/themes/**
+/exports/
+
+# Testing (development only, not project files)
+/playwright-report/
+/test-results/
+/e2e/
+/playwright.config.ts
+/.playwright-cli
+
+# Rust
+*.rs.bk
+
+# Git worktrees
+/.worktrees/
+
+# docs
+docs/reference.md
+docs/superpowers/uncertainties/
+.superpowers/
