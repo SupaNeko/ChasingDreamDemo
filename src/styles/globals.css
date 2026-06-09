@@ -82,6 +82,18 @@ textarea {
   color: inherit;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-warm-candle);
+  outline-offset: 2px;
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -34,8 +34,6 @@ npm-debug.log*
 # Testing (development only, not project files)
 /playwright-report/
 /test-results/
-/e2e/
-/playwright.config.ts
 /.playwright-cli
 
 # Rust
