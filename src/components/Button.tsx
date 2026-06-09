@@ -13,7 +13,7 @@ export function Button({
   variant = "primary",
   loading = false,
   disabled,
-  type = "button",
+  type = "submit",
   ...props
 }: ButtonProps) {
   const baseStyles: React.CSSProperties = {

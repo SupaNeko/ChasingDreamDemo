@@ -1,3 +1,5 @@
+import { LaunchForm } from "@/components/LaunchForm";
+
 export default function Home() {
-  return <div></div>;
+  return <LaunchForm />;
 }
