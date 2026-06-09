@@ -15,7 +15,7 @@ export function InputBar({ onSend, loading }: InputBarProps) {
   const [text, setText] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
-  const recognitionRef = useRef<InstanceType<SpeechRecognitionType> | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const canSend = text.trim().length > 0 && !loading;
 

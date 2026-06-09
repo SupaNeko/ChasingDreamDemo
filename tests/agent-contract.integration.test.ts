@@ -31,6 +31,7 @@ describe("Agent Contract Integration", () => {
                     motion: "slow-floating",
                     density: 0.65,
                   },
+                  fragments: [],
                 }),
               },
             },

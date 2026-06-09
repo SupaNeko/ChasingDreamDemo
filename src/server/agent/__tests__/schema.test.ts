@@ -82,6 +82,7 @@ describe("agentDreamStateSchema", () => {
     gentleReflection: "这个梦里有追逐...",
     followUpQuestion: "你还记得追你的人像谁吗？",
     atmosphere: { palette: "deep-blue-gold", motion: "slow-floating", density: 0.65 },
+    fragments: [],
   };
 
   it("accepts a valid state", () => {

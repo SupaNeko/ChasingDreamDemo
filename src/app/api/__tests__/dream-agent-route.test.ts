@@ -29,6 +29,7 @@ describe("POST /api/dream-agent", () => {
                     motion: "slow-floating",
                     density: 0.65,
                   },
+                  fragments: [],
                 }),
               },
             },
