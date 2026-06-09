@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import path from "node:path";
 import fs from "node:fs";
+import { migrate } from "./migrate";
 
 export function createConnection(dbPath?: string): Database.Database {
   const targetPath = dbPath ?? path.resolve(process.cwd(), "data", "chasing-dream.sqlite");
@@ -14,6 +15,7 @@ export function createConnection(dbPath?: string): Database.Database {
 
   const db = new Database(targetPath);
   db.pragma("journal_mode = WAL");
+  migrate(db);
   return db;
 }
 

@@ -25,6 +25,7 @@ export async function POST(request: Request): Promise<Response> {
       ...parsed.data.state,
       dreamerId: parsed.data.dreamerId,
       idempotencyKey: parsed.data.idempotencyKey,
+      sourceDreamId: parsed.data.sourceDreamId,
     });
     return Response.json(dream);
   } catch (error) {

@@ -69,12 +69,13 @@ export async function runDreamAgent(request: {
 export async function saveDream(
   dreamerId: string,
   state: DreamState,
-  idempotencyKey?: string
+  idempotencyKey?: string,
+  sourceDreamId?: string
 ): Promise<{ ok: true; data: SavedDream } | { ok: false; error: ApiError }> {
   return safeFetch<SavedDream>(`${API_BASE}/api/dreams`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dreamerId, state, idempotencyKey }),
+    body: JSON.stringify({ dreamerId, state, idempotencyKey, sourceDreamId }),
   });
 }
 

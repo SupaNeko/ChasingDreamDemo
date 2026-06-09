@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, PenLine } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, PenLine, Sparkles } from "lucide-react";
 import type { SavedDream } from "@/types/dream";
 
 interface DreamDetailProps {
@@ -10,6 +11,8 @@ interface DreamDetailProps {
 }
 
 export function DreamDetail({ dream }: DreamDetailProps) {
+  const router = useRouter();
+
   const paletteColors: Record<string, string> = {
     "soft-neutral": "var(--color-night-paper)",
     "warm-dusk": "oklch(22% 0.03 30)",
@@ -18,6 +21,27 @@ export function DreamDetail({ dream }: DreamDetailProps) {
   };
 
   const bg = paletteColors[dream.atmosphere?.palette || "soft-neutral"] || paletteColors["soft-neutral"];
+
+  const handleResumeToDream = () => {
+    const state = {
+      title: dream.title,
+      story: dream.story,
+      primaryEmotion: dream.primaryEmotion,
+      emotionIntensity: dream.emotionIntensity,
+      emotionArc: dream.emotionArc,
+      keywords: dream.keywords,
+      symbols: dream.symbols,
+      gentleReflection: dream.gentleReflection,
+      followUpQuestion: dream.followUpQuestion,
+      atmosphere: dream.atmosphere,
+      fragments: dream.fragments,
+    };
+    sessionStorage.setItem(
+      "chasing-dream.resumeState",
+      JSON.stringify({ state, sourceDreamId: dream.id })
+    );
+    router.push("/dream");
+  };
 
   return (
     <div
@@ -184,6 +208,34 @@ export function DreamDetail({ dream }: DreamDetailProps) {
             </ul>
           </section>
         )}
+
+        <div style={{ marginTop: "40px", paddingTop: "24px", borderTop: "1px solid var(--color-quiet-border)", textAlign: "center" }}>
+          <button
+            onClick={handleResumeToDream}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "12px 28px",
+              borderRadius: "var(--radius-md)",
+              border: "none",
+              background: "var(--color-warm-candle)",
+              color: "var(--color-night-paper)",
+              fontSize: "16px",
+              fontFamily: "var(--font-body)",
+              cursor: "pointer",
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={(e) => { (e.target as HTMLElement).style.opacity = "0.85"; }}
+            onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = "1"; }}
+          >
+            <Sparkles size={18} />
+            放入梦仓继续修改
+          </button>
+          <p style={{ marginTop: "10px", fontSize: "13px", color: "var(--color-muted-text)" }}>
+            你可以在梦舱继续补充新的梦境碎片
+          </p>
+        </div>
       </article>
     </div>
   );

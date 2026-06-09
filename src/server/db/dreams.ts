@@ -5,6 +5,7 @@ import type { DreamState, DreamSummary, SavedDream } from "@/types/dream";
 export type SaveDreamInput = DreamState & {
   dreamerId: string;
   idempotencyKey?: string;
+  sourceDreamId?: string;
 };
 
 function parseDreamRow(row: Record<string, unknown>): SavedDream {
@@ -32,6 +33,47 @@ export async function saveDream(
   db: Database.Database,
   input: SaveDreamInput
 ): Promise<SavedDream> {
+  const now = new Date().toISOString();
+
+  // 1. Update existing dream if sourceDreamId matches (resume editing)
+  if (input.sourceDreamId) {
+    const existing = db
+      .prepare("SELECT id FROM dreams WHERE id = ? AND dreamer_id = ?")
+      .get(input.sourceDreamId, input.dreamerId) as
+      | Record<string, unknown>
+      | undefined;
+
+    if (existing) {
+      db.prepare(
+        `UPDATE dreams SET
+          title = ?, story = ?, primary_emotion = ?, emotion_intensity = ?,
+          emotion_arc = ?, keywords = ?, symbols = ?, gentle_reflection = ?,
+          follow_up_question = ?, atmosphere = ?, fragments = ?, updated_at = ?
+        WHERE id = ?`
+      ).run(
+        input.title,
+        input.story,
+        input.primaryEmotion ?? null,
+        input.emotionIntensity ?? null,
+        JSON.stringify(input.emotionArc),
+        JSON.stringify(input.keywords),
+        JSON.stringify(input.symbols),
+        input.gentleReflection ?? null,
+        input.followUpQuestion,
+        input.atmosphere ? JSON.stringify(input.atmosphere) : null,
+        JSON.stringify(input.fragments),
+        now,
+        existing.id
+      );
+
+      const row = db
+        .prepare("SELECT * FROM dreams WHERE id = ?")
+        .get(existing.id) as Record<string, unknown>;
+      return parseDreamRow(row);
+    }
+  }
+
+  // 2. Idempotency: avoid duplicate saves within the same session
   if (input.idempotencyKey) {
     const existing = db
       .prepare(
@@ -42,12 +84,38 @@ export async function saveDream(
       | undefined;
 
     if (existing) {
-      return parseDreamRow(existing);
+      // Update the existing record with latest state
+      db.prepare(
+        `UPDATE dreams SET
+          title = ?, story = ?, primary_emotion = ?, emotion_intensity = ?,
+          emotion_arc = ?, keywords = ?, symbols = ?, gentle_reflection = ?,
+          follow_up_question = ?, atmosphere = ?, fragments = ?, updated_at = ?
+        WHERE id = ?`
+      ).run(
+        input.title,
+        input.story,
+        input.primaryEmotion ?? null,
+        input.emotionIntensity ?? null,
+        JSON.stringify(input.emotionArc),
+        JSON.stringify(input.keywords),
+        JSON.stringify(input.symbols),
+        input.gentleReflection ?? null,
+        input.followUpQuestion,
+        input.atmosphere ? JSON.stringify(input.atmosphere) : null,
+        JSON.stringify(input.fragments),
+        now,
+        existing.id
+      );
+
+      const row = db
+        .prepare("SELECT * FROM dreams WHERE id = ?")
+        .get(existing.id) as Record<string, unknown>;
+      return parseDreamRow(row);
     }
   }
 
-  const id = randomUUID();
-  const now = new Date().toISOString();
+  // 3. Create new dream record
+  const id = input.sourceDreamId || randomUUID();
 
   db.prepare(
     `INSERT INTO dreams (
@@ -83,6 +151,14 @@ export async function saveDream(
   return parseDreamRow(row);
 }
 
+function toDateKey(isoString: string): string {
+  const d = new Date(isoString);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export async function listDreams(
   db: Database.Database,
   dreamerId: string
@@ -97,7 +173,7 @@ export async function listDreams(
   return rows.map((row) => ({
     id: row.id as string,
     title: row.title as string,
-    dreamDate: row.dream_date as string,
+    dreamDate: toDateKey(row.dream_date as string),
     primaryEmotion: row.primary_emotion as string | undefined,
     createdAt: row.created_at as string,
   }));

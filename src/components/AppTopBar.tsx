@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Calendar, Save, LogOut } from "lucide-react";
 import { IconButton } from "./IconButton";
 import { clearCurrentDreamer } from "@/lib/dreamer-storage";
-import { useRouter } from "next/navigation";
 
 interface AppTopBarProps {
   dreamerName: string;
@@ -15,16 +14,16 @@ interface AppTopBarProps {
 }
 
 export function AppTopBar({ dreamerName, canSave, onSave, saving }: AppTopBarProps) {
-  const router = useRouter();
-
   const handleSwitch = () => {
     clearCurrentDreamer();
-    router.push("/");
+    window.location.href = "/";
   };
 
   return (
     <header
       style={{
+        position: "relative",
+        zIndex: 20,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -57,6 +56,7 @@ export function AppTopBar({ dreamerName, canSave, onSave, saving }: AppTopBarPro
         <IconButton
           icon={LogOut}
           aria-label="切换梦者"
+          type="button"
           onClick={handleSwitch}
         />
       </div>

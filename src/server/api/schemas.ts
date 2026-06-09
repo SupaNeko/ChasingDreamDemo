@@ -56,6 +56,7 @@ export const saveDreamRequestSchema = z.object({
   dreamerId: z.string().min(1),
   state: dreamStateSchema,
   idempotencyKey: z.string().optional(),
+  sourceDreamId: z.string().optional(),
 });
 
 export const dreamListQuerySchema = z.object({

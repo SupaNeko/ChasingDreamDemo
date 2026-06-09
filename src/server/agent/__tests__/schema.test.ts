@@ -32,14 +32,17 @@ describe("dreamAgentRequestSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects invalid keyword type in currentState", () => {
+  it("normalizes invalid keyword type to 'other' in currentState", () => {
     const result = dreamAgentRequestSchema.safeParse({
       ...validRequest,
       currentState: {
         keywords: [{ text: "桥", type: "invalid", weight: 0.5 }],
       },
     });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.currentState?.keywords?.[0].type).toBe("other");
+    }
   });
 
   it("rejects emotion intensity outside 0-1", () => {

@@ -11,6 +11,36 @@ import { loadCurrentDreamer } from "@/lib/dreamer-storage";
 import { runDreamAgent, saveDream } from "@/lib/client-api";
 import type { DreamState, Dreamer } from "@/types/dream";
 
+function loadResumeState(): { state: DreamState; sourceDreamId?: string } | null {
+  try {
+    const raw = sessionStorage.getItem("chasing-dream.resumeState");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as unknown;
+    sessionStorage.removeItem("chasing-dream.resumeState");
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      "state" in parsed &&
+      parsed.state &&
+      typeof parsed.state === "object" &&
+      "story" in parsed.state &&
+      typeof (parsed.state as Record<string, unknown>).story === "string"
+    ) {
+      return {
+        state: parsed.state as DreamState,
+        sourceDreamId:
+          "sourceDreamId" in parsed &&
+          typeof parsed.sourceDreamId === "string"
+            ? parsed.sourceDreamId
+            : undefined,
+      };
+    }
+  } catch {
+    // ignore parse error
+  }
+  return null;
+}
+
 const emptyState: DreamState = {
   title: "",
   story: "",
@@ -23,8 +53,10 @@ const emptyState: DreamState = {
 
 export default function DreamPage() {
   const router = useRouter();
+  const resumed = loadResumeState();
   const [dreamer, setDreamer] = useState<Dreamer | null>(null);
-  const [state, setState] = useState<DreamState>(emptyState);
+  const [state, setState] = useState<DreamState>(resumed?.state ?? emptyState);
+  const [sessionKey] = useState(() => resumed?.sourceDreamId ?? crypto.randomUUID());
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
@@ -39,6 +71,17 @@ export default function DreamPage() {
     setDreamer(d);
   }, [router]);
 
+  const autoSave = useCallback(
+    async (nextState: DreamState) => {
+      if (!dreamer || !nextState.story || !nextState.title) return;
+      setSaving(true);
+      await saveDream(dreamer.id, nextState, sessionKey, sessionKey);
+      setSaving(false);
+      // Auto-save is silent; do not show "saved" toast
+    },
+    [dreamer, sessionKey]
+  );
+
   const handleSend = useCallback(
     async (content: string, inputType: "text" | "voice") => {
       if (!dreamer) return;
@@ -52,19 +95,19 @@ export default function DreamPage() {
       setLoading(false);
       if (result.ok) {
         setState(result.data.state);
+        await autoSave(result.data.state);
       } else {
         setError(result.error.error.message);
       }
     },
-    [dreamer, state]
+    [dreamer, state, autoSave]
   );
 
   const handleSave = useCallback(async () => {
     if (!dreamer || !state.story || !state.title) return;
     setSaving(true);
     setSaveStatus("idle");
-    const idempotencyKey = crypto.randomUUID();
-    const result = await saveDream(dreamer.id, state, idempotencyKey);
+    const result = await saveDream(dreamer.id, state, sessionKey, sessionKey);
     setSaving(false);
     if (result.ok) {
       setSaveStatus("success");
@@ -73,7 +116,7 @@ export default function DreamPage() {
       setSaveStatus("error");
       setError(result.error.error.message);
     }
-  }, [dreamer, state]);
+  }, [dreamer, state, sessionKey]);
 
   if (!dreamer) {
     return (
@@ -134,7 +177,22 @@ export default function DreamPage() {
         }}
       >
         <DreamStoryPanel story={state.story} />
-        <KeywordBubble keywords={state.keywords} />
+        {state.followUpQuestion && (
+          <div
+            style={{
+              maxWidth: 680,
+              margin: "0 auto",
+              padding: "0 24px 24px",
+              textAlign: "center",
+              color: "var(--color-muted-text)",
+              fontSize: "15px",
+              lineHeight: 1.7,
+              fontStyle: "italic",
+            }}
+          >
+            {state.followUpQuestion}
+          </div>
+        )}
         {loading && (
           <div
             style={{
@@ -160,6 +218,7 @@ export default function DreamPage() {
           </div>
         )}
       </main>
+      <KeywordBubble keywords={state.keywords} />
       <div
         style={{
           position: "fixed",

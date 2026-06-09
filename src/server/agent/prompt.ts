@@ -22,6 +22,7 @@ export function buildDreamAgentPrompt(input: ValidDreamAgentRequest): { system: 
 - emotionIntensity: 情绪强度（0 到 1 之间的数字）
 - emotionArc: 情绪弧线（最多 8 个字符串的数组）
 - keywords: 关键词数组（最多 12 个，每个包含 text、type、weight（0-1））
+  - type 必须是以下英文值之一：emotion（情绪）、person（人物）、place（地点）、object（物体）、color（颜色）、action（动作）、symbol（象征）、other（其他）
 - symbols: 象征物数组（最多 12 个字符串）
 - gentleReflection: 温柔的反思（字符串）
 - followUpQuestion: 后续问题（字符串，非空，只能有一个问题）
