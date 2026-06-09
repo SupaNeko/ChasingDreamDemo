@@ -8,6 +8,8 @@ export type DreamAgentRequest = {
   now?: string;
 };
 
+import type { FragmentInput } from "@/types/dream";
+
 export type AgentDreamState = {
   title: string;
   story: string;
@@ -19,6 +21,7 @@ export type AgentDreamState = {
   gentleReflection: string;
   followUpQuestion: string;
   atmosphere: { palette: string; motion: string; density: number };
+  fragments: FragmentInput[];
 };
 
 export type AgentResult =

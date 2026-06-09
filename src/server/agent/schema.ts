@@ -64,6 +64,13 @@ export const dreamAgentRequestSchema = z.object({
   now: z.string().optional(),
 });
 
+const fragmentInputSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  inputType: z.enum(["text", "voice"]),
+  createdAt: z.string(),
+});
+
 export const agentDreamStateSchema = z.object({
   title: z.string().min(1),
   story: z.string().min(1),
@@ -75,6 +82,7 @@ export const agentDreamStateSchema = z.object({
   gentleReflection: z.string(),
   followUpQuestion: z.string().min(1),
   atmosphere: dreamAtmosphereSchema,
+  fragments: z.array(fragmentInputSchema).optional(),
 });
 
 export type ValidDreamAgentRequest = z.infer<typeof dreamAgentRequestSchema>;

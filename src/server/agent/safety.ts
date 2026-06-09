@@ -1,4 +1,5 @@
 import type { AgentDreamState, ValidDreamAgentRequest } from "./schema";
+import { v4 as uuidv4 } from "uuid";
 
 export type SafetyFinding = {
   code: string;
@@ -96,6 +97,14 @@ export function makeSafeFallback(input: ValidDreamAgentRequest, reason: string):
     ? `${existing.story}\n\n新的片段：${newStory}`
     : newStory;
 
+  const existingFragments = existing?.fragments ?? [];
+  const newFragment = {
+    id: uuidv4(),
+    content: input.fragment.content,
+    inputType: input.fragment.inputType,
+    createdAt: new Date().toISOString(),
+  };
+
   return {
     title: existing?.title ?? "梦境片段",
     story,
@@ -111,5 +120,6 @@ export function makeSafeFallback(input: ValidDreamAgentRequest, reason: string):
       motion: "gentle-drift",
       density: 0.5,
     },
+    fragments: [...existingFragments, newFragment],
   };
 }
