@@ -4,12 +4,18 @@ import fs from "node:fs";
 import { migrate } from "./migrate";
 
 export function createConnection(dbPath?: string): Database.Database {
-  const targetPath = dbPath ?? path.resolve(process.cwd(), "data", "chasing-dream.sqlite");
+  const targetPath =
+    dbPath ??
+    process.env.DATABASE_PATH ??
+    path.resolve(process.cwd(), "data", "chasing-dream.sqlite");
 
-  if (!dbPath) {
-    const dir = path.dirname(targetPath);
-    if (!fs.existsSync(dir)) {
+  const dir = path.dirname(targetPath);
+  if (!fs.existsSync(dir)) {
+    try {
       fs.mkdirSync(dir, { recursive: true });
+    } catch {
+      // 在只读文件系统（如 Vercel Serverless）上会失败
+      // 如果是 /tmp 等系统目录，通常已经存在
     }
   }
 
