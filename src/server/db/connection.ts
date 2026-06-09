@@ -7,6 +7,7 @@ export function createConnection(dbPath?: string): Database.Database {
   const targetPath =
     dbPath ??
     process.env.DATABASE_PATH ??
+    (process.env.VERCEL ? "/tmp/chasing-dream.sqlite" : undefined) ??
     path.resolve(process.cwd(), "data", "chasing-dream.sqlite");
 
   const dir = path.dirname(targetPath);
@@ -15,7 +16,6 @@ export function createConnection(dbPath?: string): Database.Database {
       fs.mkdirSync(dir, { recursive: true });
     } catch {
       // 在只读文件系统（如 Vercel Serverless）上会失败
-      // 如果是 /tmp 等系统目录，通常已经存在
     }
   }
 
