@@ -1,4 +1,4 @@
-<!-- SEED: re-run /impeccable document once there's code to capture the actual tokens and components. -->
+<!-- Design tokens finalized on 2026-06-09 -->
 ---
 name: 巡梦
 description: 温柔安全的梦境拼合与回看产品界面
@@ -27,21 +27,22 @@ description: 温柔安全的梦境拼合与回看产品界面
 
 ### Primary
 
-- **低光暖烛** ([to be resolved during implementation]): 用于主行动、保存成功、当前选中状态。它应像远处的暖灯，不像霓虹按钮。
+- **低光暖烛** `oklch(75% 0.12 75)` / `#C9A96E`: 用于主行动、保存成功、当前选中状态。它应像远处的暖灯，不像霓虹按钮。
 
 ### Secondary
 
-- **梦面蓝雾** ([to be resolved during implementation]): 用于背景氛围、气泡边缘和详情页层次。它应偏灰、偏柔，不可变成科技蓝。
+- **梦面蓝雾** `oklch(60% 0.08 250)` / `#6B8299`: 用于背景氛围、气泡边缘和详情页层次。它应偏灰、偏柔，不可变成科技蓝。
 
 ### Tertiary
 
-- **潮湿玫影** ([to be resolved during implementation]): 用于少量情绪强调，尤其是“不舍、温柔、模糊”的梦境标签。
+- **潮湿玫影** `oklch(65% 0.14 15)` / `#B87A7A`: 用于少量情绪强调，尤其是“不舍、温柔、模糊”的梦境标签。
 
 ### Neutral
 
-- **深夜纸面** ([to be resolved during implementation]): 主背景，不用纯黑。
-- **雾灰墨字** ([to be resolved during implementation]): 正文与标题，不用纯白。
-- **静默边界** ([to be resolved during implementation]): 分隔线、输入框边框和容器轮廓。
+- **深夜纸面** `oklch(18% 0.02 260)` / `#1A1D24`: 主背景，不用纯黑。
+- **雾灰墨字** `oklch(85% 0.01 260)` / `#D8DADE`: 正文与标题，不用纯白。
+- **静默边界** `oklch(30% 0.02 260)` / `#2E313A`: 分隔线、输入框边框和容器轮廓。
+- **浅墨层** `oklch(24% 0.02 260)` / `#22252E`: 卡片与面板背景，比深夜纸面略亮一层。
 
 ### Named Rules
 
@@ -51,19 +52,19 @@ description: 温柔安全的梦境拼合与回看产品界面
 
 ## 3. Typography
 
-**Display Font:** [font pairing to be chosen at implementation]  
-**Body Font:** [font pairing to be chosen at implementation]  
-**Label/Mono Font:** [font pairing to be chosen at implementation]
+**Display Font:** `Georgia, "Noto Serif SC", "Songti SC", serif` — 用于启动页标题和详情页梦境标题，略带文学气质。  
+**Body Font:** `"PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif` — 清晰、安静，用于正文、故事和 UI 标签。  
+**Label/Mono Font:** `"SF Mono", "Menlo", "Consolas", monospace` — 仅用于时间戳、技术标签等极小场景。
 
 **Character:** 字体方向应是人文、安静、可阅读。标题可以略有文学气，但 UI 标签、按钮、输入和日期必须使用清晰的产品字体。
 
 ### Hierarchy
 
-- **Display** ([to be resolved], [to be resolved], [to be resolved]): 只用于启动页标题或详情页梦境标题。
-- **Headline** ([to be resolved], [to be resolved], [to be resolved]): 用于页面主标题和关键状态。
-- **Title** ([to be resolved], [to be resolved], [to be resolved]): 用于面板、日历日期组和碎片匣标题。
-- **Body** ([to be resolved], [to be resolved], [to be resolved]): 用于梦境故事，最大行长控制在 65-75ch。
-- **Label** ([to be resolved], [to be resolved], [to be resolved]): 用于按钮、时间、输入提示和状态标签。
+- **Display** (2rem / 32px, 600, 1.2): 只用于启动页标题或详情页梦境标题。
+- **Headline** (1.5rem / 24px, 600, 1.3): 用于页面主标题和关键状态。
+- **Title** (1.125rem / 18px, 500, 1.4): 用于面板、日历日期组和碎片匣标题。
+- **Body** (1rem / 16px, 400, 1.75): 用于梦境故事，最大行长控制在 65-75ch。
+- **Label** (0.875rem / 14px, 500, 1.5): 用于按钮、时间、输入提示和状态标签。
 
 ### Named Rules
 
