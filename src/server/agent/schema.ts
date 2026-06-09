@@ -82,7 +82,8 @@ export const agentDreamStateSchema = z.object({
   gentleReflection: z.string(),
   followUpQuestion: z.string().min(1),
   atmosphere: dreamAtmosphereSchema,
-  fragments: z.array(fragmentInputSchema).optional(),
+  fragments: z.array(fragmentInputSchema),
 });
 
 export type ValidDreamAgentRequest = z.infer<typeof dreamAgentRequestSchema>;
+export type AgentDreamState = z.infer<typeof agentDreamStateSchema>;
